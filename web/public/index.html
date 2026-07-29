@@ -90,6 +90,20 @@
           <p class="muted center">Loading…</p>
         </div>
       </section>
+
+      <section class="card insights" id="insights" hidden aria-labelledby="insights-heading">
+        <div class="insights-header">
+          <h2 id="insights-heading">Insights</h2>
+          <span class="src-badge" title="Computed by the Python analytics service">via Python analytics service</span>
+        </div>
+        <div class="insights-grid">
+          <div class="mini-stat"><span class="mini-value" id="ins-avg">—</span><span class="mini-label">Avg hits / link</span></div>
+          <div class="mini-stat"><span class="mini-value" id="ins-unused">—</span><span class="mini-label">Never used</span></div>
+          <div class="mini-stat"><span class="mini-value" id="ins-with-hits">—</span><span class="mini-label">Links with hits</span></div>
+        </div>
+        <h3 class="top-title">Most used</h3>
+        <ol class="top-links" id="ins-top"></ol>
+      </section>
     </main>
 
     <footer class="wrap site-footer">

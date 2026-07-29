@@ -54,7 +54,40 @@ const els = {
   statTotal: document.getElementById("stat-total"),
   statHits: document.getElementById("stat-hits"),
   statTop: document.getElementById("stat-top"),
+  insights: document.getElementById("insights"),
+  insAvg: document.getElementById("ins-avg"),
+  insUnused: document.getElementById("ins-unused"),
+  insWithHits: document.getElementById("ins-with-hits"),
+  insTop: document.getElementById("ins-top"),
 };
+
+// Fetches analytics from the Python service (proxied at /analytics). Hidden
+// gracefully if that service isn't reachable, so the app works standalone.
+async function loadInsights() {
+  try {
+    const res = await fetch("/analytics/summary");
+    if (!res.ok) throw new Error(String(res.status));
+    const s = await res.json();
+    els.insAvg.textContent = String(s.average_hits);
+    els.insUnused.textContent = String(s.never_used);
+    els.insWithHits.textContent = String(s.links_with_hits);
+    els.insTop.innerHTML = "";
+    for (const link of s.top_links.filter((l) => l.hits > 0)) {
+      const li = document.createElement("li");
+      const name = document.createElement("span");
+      name.className = "top-slug";
+      name.textContent = `go/${link.slug}`;
+      const b = document.createElement("span");
+      b.className = "badge";
+      b.textContent = `${link.hits} ${link.hits === 1 ? "hit" : "hits"}`;
+      li.append(name, b);
+      els.insTop.append(li);
+    }
+    els.insights.hidden = els.insTop.children.length === 0;
+  } catch {
+    els.insights.hidden = true;
+  }
+}
 
 let editingSlug = null;
 
@@ -165,6 +198,7 @@ function editForm(link) {
       toast(`Updated go/${link.slug}.`, "success");
       editingSlug = null;
       await refresh(els.search.value.trim());
+      loadInsights();
     } catch (err) {
       toast(err.message, "error");
     }
@@ -221,6 +255,7 @@ async function onDelete(slug) {
     await api.remove(slug);
     toast(`Deleted go/${slug}.`, "success");
     await refresh(els.search.value.trim());
+    loadInsights();
   } catch (err) {
     toast(err.message, "error");
   }
@@ -239,6 +274,7 @@ els.form.addEventListener("submit", async (event) => {
     els.form.reset();
     els.slug.focus();
     await refresh(els.search.value.trim());
+    loadInsights();
   } catch (err) {
     toast(err.message, "error");
     els.slug.focus();
@@ -264,3 +300,4 @@ els.search.addEventListener("input", () => {
 })();
 
 refresh();
+loadInsights();

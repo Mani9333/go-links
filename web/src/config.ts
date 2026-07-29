@@ -7,6 +7,12 @@ export interface AppConfig {
   mongoUri?: string;
   mongoDb: string;
   mongoCollection: string;
+  /**
+   * Base URL of the Python analytics service. When set, the app proxies
+   * `/analytics/*` to it — a dev convenience so the UI's insights work without
+   * nginx. In production, nginx routes `/analytics` directly to the service.
+   */
+  analyticsUrl?: string;
 }
 
 /**
@@ -20,6 +26,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
   }
 
   const mongoUri = env.MONGODB_URI?.trim();
+  const analyticsUrl = env.ANALYTICS_URL?.trim();
 
   return {
     host: env.HOST ?? "0.0.0.0",
@@ -29,5 +36,6 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     mongoUri: mongoUri && mongoUri.length > 0 ? mongoUri : undefined,
     mongoDb: env.MONGODB_DB ?? "golinks",
     mongoCollection: env.MONGODB_COLLECTION ?? "links",
+    analyticsUrl: analyticsUrl && analyticsUrl.length > 0 ? analyticsUrl : undefined,
   };
 }

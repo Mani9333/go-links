@@ -1,7 +1,26 @@
+# Node
 node_modules/
 dist/
-coverage/
-*.log
+*.tsbuildinfo
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# Env & secrets
 .env
 .env.local
+
+# OS / editor
 .DS_Store
+*.log
+
+# Build artifacts / archives
+coverage/
+*.tar.gz
+go-links.zip

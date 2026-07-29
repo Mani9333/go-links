@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import fastifyHttpProxy from "@fastify/http-proxy";
 import fastifyStatic from "@fastify/static";
 import Fastify, { type FastifyInstance } from "fastify";
 import { ZodError } from "zod";
@@ -136,6 +137,17 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
   await app.register(registerSystemRoutes, { registry });
   await app.register(registerLinkRoutes, { repository });
   await app.register(registerRedirectRoutes, { repository });
+
+  // Dev convenience: proxy /analytics/* to the Python analytics service so the
+  // UI's insights panel works with `npm run dev` alone. In production, nginx
+  // routes /analytics directly to that service instead.
+  if (config.analyticsUrl) {
+    await app.register(fastifyHttpProxy, {
+      upstream: config.analyticsUrl,
+      prefix: "/analytics",
+      rewritePrefix: "/analytics",
+    });
+  }
 
   // Serve the minimal browser UI. Registered last so explicit API/redirect
   // routes always take precedence over the static wildcard.
