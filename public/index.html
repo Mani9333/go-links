@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>go/ links</title>
-    <meta name="description" content="Create and resolve internal go/ shortcuts." />
+    <title>go/ links — internal shortcuts</title>
+    <meta name="description" content="Create, browse and resolve internal go/ shortcuts." />
     <link rel="stylesheet" href="/styles.css" />
     <link
       rel="icon"
@@ -13,95 +13,90 @@
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
+
     <header class="site-header">
-      <div class="wrap">
-        <h1><span aria-hidden="true">🔗</span> go/ links</h1>
-        <p class="tagline">Short, memorable shortcuts for the links your team shares all day.</p>
+      <div class="wrap header-inner">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">go/</span>
+          <div>
+            <h1>go links</h1>
+            <p class="tagline">Short, memorable shortcuts for the links your team shares all day.</p>
+          </div>
+        </div>
+        <nav class="ops" aria-label="Operational endpoints">
+          <a href="/healthz" target="_blank" rel="noopener">health</a>
+          <a href="/metrics" target="_blank" rel="noopener">metrics</a>
+        </nav>
       </div>
     </header>
 
     <main id="main" class="wrap">
-      <p
-        id="status"
-        class="status"
-        role="status"
-        aria-live="polite"
-        hidden
-      ></p>
+      <section class="stats" aria-label="Overview">
+        <div class="stat">
+          <span class="stat-value" id="stat-total">—</span>
+          <span class="stat-label">Shortcuts</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="stat-hits">—</span>
+          <span class="stat-label">Total hits</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="stat-top">—</span>
+          <span class="stat-label">Most used</span>
+        </div>
+      </section>
 
-      <section class="card" aria-labelledby="create-heading">
+      <section class="card create" aria-labelledby="create-heading">
         <h2 id="create-heading">Create a shortcut</h2>
         <form id="create-form" novalidate>
-          <div class="field">
-            <label for="slug">Shortcut</label>
-            <div class="slug-input">
-              <span class="prefix" aria-hidden="true">go/</span>
-              <input
-                id="slug"
-                name="slug"
-                type="text"
-                inputmode="latin"
-                autocomplete="off"
-                placeholder="oncall"
-                aria-describedby="slug-hint"
-                required
-              />
+          <div class="grid">
+            <div class="field">
+              <label for="slug">Shortcut</label>
+              <div class="slug-input">
+                <span class="prefix" aria-hidden="true">go/</span>
+                <input id="slug" name="slug" type="text" autocomplete="off"
+                  placeholder="oncall" aria-describedby="slug-hint" required />
+              </div>
+              <p id="slug-hint" class="hint">lowercase · letters, numbers, - and _</p>
             </div>
-            <p id="slug-hint" class="hint">Lowercase letters, numbers, hyphen and underscore.</p>
-          </div>
 
-          <div class="field">
-            <label for="url">Destination URL</label>
-            <input
-              id="url"
-              name="url"
-              type="url"
-              autocomplete="off"
-              placeholder="https://example.com/oncall-schedule"
-              required
-            />
+            <div class="field">
+              <label for="url">Destination URL</label>
+              <input id="url" name="url" type="url" autocomplete="off"
+                placeholder="https://example.com/oncall-schedule" required />
+              <p class="hint">must be a valid http(s) URL</p>
+            </div>
           </div>
 
           <div class="field">
             <label for="description">Description <span class="optional">(optional)</span></label>
-            <input
-              id="description"
-              name="description"
-              type="text"
-              autocomplete="off"
-              placeholder="Current on-call schedule"
-              maxlength="280"
-            />
+            <input id="description" name="description" type="text" autocomplete="off"
+              placeholder="Current on-call schedule" maxlength="280" />
           </div>
 
-          <button type="submit" class="btn primary">Create shortcut</button>
+          <button type="submit" class="btn primary" id="create-btn">Create shortcut</button>
         </form>
       </section>
 
       <section class="card" aria-labelledby="list-heading">
         <div class="list-header">
-          <h2 id="list-heading">Shortcuts</h2>
+          <h2 id="list-heading">Shortcuts <span class="count" id="list-count"></span></h2>
           <div class="search">
             <label class="visually-hidden" for="search">Search shortcuts</label>
-            <input
-              id="search"
-              type="search"
-              placeholder="Search slug, URL or description…"
-              autocomplete="off"
-            />
+            <input id="search" type="search" placeholder="Search slug, URL or description…" autocomplete="off" />
           </div>
         </div>
-        <div id="list" class="list" aria-live="polite"></div>
+        <div id="list" class="list" aria-live="polite" aria-busy="true">
+          <p class="muted center">Loading…</p>
+        </div>
       </section>
     </main>
 
     <footer class="wrap site-footer">
-      <span>go-links</span>
-      <nav aria-label="Operational endpoints">
-        <a href="/healthz">/healthz</a>
-        <a href="/metrics">/metrics</a>
-      </nav>
+      <span>go-links · a tiny internal URL shortcut service</span>
     </footer>
+
+    <div id="toasts" class="toasts" role="region" aria-live="polite" aria-label="Notifications"></div>
 
     <script src="/app.js" defer></script>
   </body>

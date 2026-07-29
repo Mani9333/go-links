@@ -3,6 +3,10 @@ export interface AppConfig {
   port: number;
   logLevel: string;
   nodeEnv: string;
+  /** MongoDB connection string. When omitted, the app uses an in-memory store. */
+  mongoUri?: string;
+  mongoDb: string;
+  mongoCollection: string;
 }
 
 /**
@@ -15,10 +19,15 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     throw new Error(`Invalid PORT: ${String(env.PORT)}`);
   }
 
+  const mongoUri = env.MONGODB_URI?.trim();
+
   return {
     host: env.HOST ?? "0.0.0.0",
     port,
     logLevel: env.LOG_LEVEL ?? "info",
     nodeEnv: env.NODE_ENV ?? "development",
+    mongoUri: mongoUri && mongoUri.length > 0 ? mongoUri : undefined,
+    mongoDb: env.MONGODB_DB ?? "golinks",
+    mongoCollection: env.MONGODB_COLLECTION ?? "links",
   };
 }
