@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>go/ links</title>
+    <meta name="description" content="Create and resolve internal go/ shortcuts." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔗</text></svg>"
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="wrap">
+        <h1><span aria-hidden="true">🔗</span> go/ links</h1>
+        <p class="tagline">Short, memorable shortcuts for the links your team shares all day.</p>
+      </div>
+    </header>
+
+    <main id="main" class="wrap">
+      <p
+        id="status"
+        class="status"
+        role="status"
+        aria-live="polite"
+        hidden
+      ></p>
+
+      <section class="card" aria-labelledby="create-heading">
+        <h2 id="create-heading">Create a shortcut</h2>
+        <form id="create-form" novalidate>
+          <div class="field">
+            <label for="slug">Shortcut</label>
+            <div class="slug-input">
+              <span class="prefix" aria-hidden="true">go/</span>
+              <input
+                id="slug"
+                name="slug"
+                type="text"
+                inputmode="latin"
+                autocomplete="off"
+                placeholder="oncall"
+                aria-describedby="slug-hint"
+                required
+              />
+            </div>
+            <p id="slug-hint" class="hint">Lowercase letters, numbers, hyphen and underscore.</p>
+          </div>
+
+          <div class="field">
+            <label for="url">Destination URL</label>
+            <input
+              id="url"
+              name="url"
+              type="url"
+              autocomplete="off"
+              placeholder="https://example.com/oncall-schedule"
+              required
+            />
+          </div>
+
+          <div class="field">
+            <label for="description">Description <span class="optional">(optional)</span></label>
+            <input
+              id="description"
+              name="description"
+              type="text"
+              autocomplete="off"
+              placeholder="Current on-call schedule"
+              maxlength="280"
+            />
+          </div>
+
+          <button type="submit" class="btn primary">Create shortcut</button>
+        </form>
+      </section>
+
+      <section class="card" aria-labelledby="list-heading">
+        <div class="list-header">
+          <h2 id="list-heading">Shortcuts</h2>
+          <div class="search">
+            <label class="visually-hidden" for="search">Search shortcuts</label>
+            <input
+              id="search"
+              type="search"
+              placeholder="Search slug, URL or description…"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+        <div id="list" class="list" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <footer class="wrap site-footer">
+      <span>go-links</span>
+      <nav aria-label="Operational endpoints">
+        <a href="/healthz">/healthz</a>
+        <a href="/metrics">/metrics</a>
+      </nav>
+    </footer>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>
