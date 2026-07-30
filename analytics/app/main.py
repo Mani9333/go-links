@@ -87,6 +87,11 @@ def create_app(
         version="1.0.0",
         summary="Read-only usage analytics for go/ links.",
         lifespan=lifespan,
+        # Serve the interactive docs under the /analytics prefix so they are
+        # reachable through nginx (which proxies /analytics/* to this service).
+        docs_url="/analytics/docs",
+        redoc_url="/analytics/redoc",
+        openapi_url="/analytics/openapi.json",
     )
     app.state.settings = settings
     app.state.repository = repository
