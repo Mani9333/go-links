@@ -120,13 +120,35 @@ cd web && MONGODB_TEST_URI="mongodb://127.0.0.1:27017" npm test
 cd analytics && MONGODB_TEST_URI="mongodb://127.0.0.1:27017" pytest
 ```
 
-## Deployment
+## Deployment (live)
 
-In production, nginx serves the UI and routes `/api`, `/go`, `/healthz`,
-`/metrics` to the web service and `/analytics` to the Python service; both run
-under systemd against MongoDB Atlas. The detailed GCP VM runbook (reserved static
-IP, Atlas allowlist, nginx + systemd units) is kept as a separate ops document
-outside this repo.
+Deployed on a single **Google Cloud** VM (`e2-medium`, Ubuntu 24.04 LTS) behind a
+reserved static IP — the entire stack runs self-contained on that one host:
+
+**Live demo → http://34.60.105.250/**
+
+- **nginx** (`:80`) serves the static UI and reverse-proxies each path to the
+  right service: `/api`, `/go`, `/healthz`, `/metrics` → the TypeScript service
+  (`127.0.0.1:3000`), and `/analytics` → the Python service (`127.0.0.1:8000`).
+- Both services run as **systemd** units (auto-restart, start on boot).
+- **MongoDB** runs as a Docker container (`mongo:7`) on `127.0.0.1:27017` with a
+  persistent volume; both services share it. Only nginx's port `80` is exposed
+  publicly — the app processes and the database are bound to localhost.
+
+Provisioning was done with `gcloud` (reserved static IP + firewall for 80/443),
+then Node 20 / Python 3.12 / nginx / Docker were installed on the VM, the repo
+was built from source, and the systemd units + nginx site were configured.
+
+```bash
+# Update a running deployment (from the VM):
+cd ~/go-links && git pull
+cd web && npm ci && npm run build          # rebuild TS
+sudo systemctl restart go-web go-analytics
+```
+
+The same layout also runs against a managed database (e.g. MongoDB Atlas) by
+pointing both services' `MONGODB_URI` at the cluster instead of the local
+container — no code changes, thanks to the repository abstraction.
 
 ## Design decisions & tradeoffs
 
