@@ -10,8 +10,8 @@ could keep building on, rather than a feature-complete product.
 
 > Part of the [go-links monorepo](../README.md) — this is the **TypeScript**
 > service (it owns writes and the UI). A companion **Python** analytics service
-> lives in [`../analytics`](../analytics/README.md); deployment for both is in
-> [`../DEPLOY.md`](../DEPLOY.md).
+> lives in [`../analytics`](../analytics/README.md). The GCP VM deployment runbook
+> for both services is kept as a separate ops document outside this repo.
 
 ![go/links web UI](docs/screenshot.png)
 
@@ -308,8 +308,8 @@ serves the static UI and reverse-proxies `/api`, `/go`, `/healthz` and `/metrics
 to it. In production it runs under systemd alongside the Python analytics service.
 
 The full, copy-paste VM runbook — provisioning, pinned versions, a reserved static
-IP, MongoDB Atlas, nginx routing for **both** services, TLS and operations — is at
-[`../DEPLOY.md`](../DEPLOY.md).
+IP, MongoDB Atlas, nginx routing for **both** services, TLS and operations — is
+maintained as a separate ops document outside this repo.
 
 ## Design decisions & tradeoffs
 

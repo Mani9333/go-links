@@ -48,7 +48,6 @@ independently deployable — a realistic small platform rather than one monolith
 .
 ├── web/            # TypeScript service (Fastify + MongoDB) + UI   → web/README.md
 ├── analytics/      # Python service (FastAPI + MongoDB)           → analytics/README.md
-├── DEPLOY.md       # Deploy both services on a GCP Ubuntu VM (nginx + systemd)
 └── README.md       # you are here
 ```
 
@@ -123,8 +122,11 @@ cd analytics && MONGODB_TEST_URI="mongodb://127.0.0.1:27017" pytest
 
 ## Deployment
 
-See [`DEPLOY.md`](DEPLOY.md) — a copy-paste runbook to host both services on a GCP
-Ubuntu VM with a reserved static IP, MongoDB Atlas, nginx, and systemd.
+In production, nginx serves the UI and routes `/api`, `/go`, `/healthz`,
+`/metrics` to the web service and `/analytics` to the Python service; both run
+under systemd against MongoDB Atlas. The detailed GCP VM runbook (reserved static
+IP, Atlas allowlist, nginx + systemd units) is kept as a separate ops document
+outside this repo.
 
 ## Design decisions & tradeoffs
 
